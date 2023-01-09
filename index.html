@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A simple Survey on your time routine.</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
+
+    * {
+        margin: 0px;
+        padding: 0px;
+        text-decoration: none;
+        font-family: 'PT Sans', sans-serif;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    body {
+        background: linear-gradient(to right, #282828, #121212);
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        align-items: center;
+    }
+
+    .container {
+        background-color: white;
+        padding: 30px 40px 30px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        border-radius: 4px;
+    }
+
+
+    .heading {
+        font-size: 30px;
+        font-weight: 900;
+    }
+
+    .q-name {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .input-field {
+        width: 200px;
+        height: 20px;
+        padding: 5px 10px 5px 10px;
+        outline: none;
+        border: 2px solid black;
+        border-radius: 20px;
+        font-weight: 800;
+        font-size: 15px;
+    }
+
+    .next {
+        padding: 5px 30px 5px 30px;
+        font-size: 15px;
+        border: none;
+        outline: none;
+        background: #000;
+        color: white;
+        font-weight: 900;
+        border-radius: 5px;
+    }
+
+    .note {
+        font-weight: 700;
+    }
+
+
+    .options {
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+    }
+
+    .t-container {
+        background-color: white;
+        padding: 30px 40px 70px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        border-radius: 4px;
+    }
+
+    .move-down {
+        transform: translateY(50px);
+    }
+
+    .move-up {
+        transform: translateY(-50px);
+    }
+</style>
+
+<body>
+    <form name="submit-to-google-sheet">
+        <div class="first-page center">
+            <div class="container">
+                <div class="heading">Where does you waste your time daily?</div>
+                <div class="q-name">What's your name?</div>
+                <div class="inp-name"><input type="text" name="NAME" placeholder="Your name" id="user-name"
+                        class="input-field"></div>
+                <div class="next-page"><button id="first-submit" type="submit" class="next">Next</button></div>
+                <div class="note">This website is quite slow!</div>
+            </div>
+
+        </div>
+
+    </form>
+
+    <!-- ///////////////////////////////// -->
+    <div class="second-page hidden">
+        <div class="container">
+            <div class="heading">Where does you waste your time daily?</div>
+            <div class="t-inp"><input type="text" id="time-input" class="input-field"
+                    placeholder="Enter how you waste time?"></div>
+            <div class="go-to-next-page"><button id="second-submit" class="next" onclick="change_page()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ////////////////////////////////////////////////////////////// -->
+    <div class="third-page hidden">
+        <div class="t-container">
+            <div class="heading">Where does you waste your time daily?</div>
+            <div class="q-name">Ok! So, you spend most of time with your crush, right? </div>
+            <div class="options">
+                <div class="yes"><button class="btn-yes next" onclick="final_page()">YES</button></div>
+                <div class="no"><button class="btn-no next" onclick="move()">NO</button></div>
+            </div>
+        </div>
+    </div>
+    <!-- ////////////////////////////////////////////////////////////// -->
+
+    <div class="fourth-page hidden">
+        <div class="container">
+            <div class="heading">
+                Why you are wasting your time? Please don't waste time in those sh*t things like relationship. Now go and study for exams.
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    function newPage() {
+        var first = document.querySelector('.first-page');
+        var second = document.querySelector('.second-page').innerHTML;
+        var third = document.querySelector('.third-page').innerHTML;
+        first.innerHTML = second;
+
+
+
+
+
+    }
+
+    function change_page() {
+        var first = document.querySelector('.first-page');
+        first.classList.toggle('hidden')
+        var third = document.querySelector('.third-page');
+        third.style = 'display: block;'
+        first.innerHTML = third;
+
+
+    }
+    function move() {
+
+        var no = document.querySelector('.btn-no');
+
+        if (no.classList[2] == 'move-down') {
+            no.classList.remove('move-down');
+            no.classList.toggle('move-up')
+        }
+
+        else if (no.classList[2] == 'move-up') {
+            no.classList.remove('move-up')
+            no.classList.toggle('move-down');
+        }
+
+        else {
+            no.classList.toggle('move-down')
+        }
+    }
+
+    function final_page() {
+        var third = document.querySelector('.third-page');
+        third.style = 'display: none;'
+        var fourth = document.querySelector('.fourth-page');
+        fourth.classList.remove('hidden')
+    }
+
+    // ///////////////////////////////////
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzWU_aw3xrCjUuf3fGSh1px-_erpAyO9KYZSS2n6pQ3UolAdTu0Ty1BMTnCFw5RqAug0g/exec'
+    const form = document.forms['submit-to-google-sheet']
+
+    form.addEventListener('submit', e => {
+        e.preventDefault()
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+            .then(response => newPage())
+            .catch(error => console.error('Error!', error.message))
+    })
+</script>
+
+</html>
